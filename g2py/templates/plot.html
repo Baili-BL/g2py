@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ plot.page_title }}</title>
+  {% for dep in plot.dependencies %}
+    <script type="text/javascript" src="{{ dep.asset }}"></script>
+  {% endfor %}
+</head>
+<body>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    html, body, div.g2-plot-container {
+      height: 100%;
+      overflow: hidden;
+    }
+  </style>
+
+  <div id="{{ plot.plot_id }}" style="height: 400px;" class="g2-plot-container"></div>
+
+  <script>
+    var plot_{{ plot.plot_id }} = new G2.Chart({ container: "{{ plot.plot_id }}" });
+    {% if plot.options %}
+      {% if plot.options.get('js_code') %}
+        plot_{{plot.plot_id }}.{{plot.options.get('js_code')}};
+      {% else %}
+        plot_{{plot.plot_id }}.options({{plot.options}});
+      {% endif %}
+    {% endif %}
+    plot_{{ plot.plot_id }}.render();
+  </script>
+</body>
+</html>
