@@ -1,0 +1,2 @@
+include g2py/templates/*
+include README.md
