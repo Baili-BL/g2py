@@ -55,7 +55,8 @@ chart10.set_options({
   "tooltip": 'true',
 })
 chart10.render_notebook()
-chart10.render_jupyter_lab()
+![image](https://github.com/user-attachments/assets/8e80c885-8fc2-4d4a-85de-c3a557f6827c)
+
 ```
 ```
 使用 `JS` 方法，你可以创建一个 JavaScript 的代码片段去处理各种回调方法属性。
