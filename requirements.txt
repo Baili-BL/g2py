@@ -1,0 +1,15 @@
+# G2Py 核心依赖
+jinja2>=3.1.0  # 支持Python3.11+
+simplejson>=3.17.0
+
+# 开发依赖（可选）
+pytest>=7.0
+pytest-cov
+black
+flake8
+
+# Jupyter支持（可选）
+jupyter
+notebook>=6.0
+jupyterlab>=3.0
+ipython>=7.0 

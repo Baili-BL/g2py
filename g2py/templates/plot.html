@@ -4,9 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{{ plot.page_title }}</title>
-  {% for dep in plot.dependencies %}
-    <script type="text/javascript" src="{{ dep.asset }}"></script>
-  {% endfor %}
+  {% if not plot.offline %}
+    {% for dep in plot.dependencies %}
+      <script type="text/javascript" src="{{ dep.asset }}"></script>
+    {% endfor %}
+  {% endif %}
 </head>
 <body>
   <style>
@@ -24,15 +26,39 @@
   <div id="{{ plot.plot_id }}" style="height: 400px;" class="g2-plot-container"></div>
 
   <script>
+    {% if plot.offline %}
+    // 离线模式：等待页面加载后动态加载G2
+    document.addEventListener('DOMContentLoaded', function() {
+      var script = document.createElement("script");
+      script.src = "g2.min.js";
+      script.onload = function() {
+        var plot_{{ plot.plot_id }} = new G2.Chart({ container: "{{ plot.plot_id }}" });
+        {% if plot.options %}
+          {% if plot.options.get('js_code') %}
+            plot_{{ plot.plot_id }}.{{ plot.options.get('js_code') }};
+          {% else %}
+            plot_{{ plot.plot_id }}.options({{ plot.js_options }});
+          {% endif %}
+        {% endif %}
+        plot_{{ plot.plot_id }}.render();
+      };
+      script.onerror = function() {
+        console.error("无法加载离线G2文件，请确保g2.min.js文件存在");
+      };
+      document.head.appendChild(script);
+    });
+    {% else %}
+    // 在线模式：G2已通过CDN加载
     var plot_{{ plot.plot_id }} = new G2.Chart({ container: "{{ plot.plot_id }}" });
     {% if plot.options %}
       {% if plot.options.get('js_code') %}
-        plot_{{plot.plot_id }}.{{plot.options.get('js_code')}};
+        plot_{{ plot.plot_id }}.{{ plot.options.get('js_code') }};
       {% else %}
-        plot_{{plot.plot_id }}.options({{plot.options}});
+        plot_{{ plot.plot_id }}.options({{ plot.js_options }});
       {% endif %}
     {% endif %}
     plot_{{ plot.plot_id }}.render();
+    {% endif %}
   </script>
 </body>
 </html>

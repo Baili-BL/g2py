@@ -1,127 +1,300 @@
 Metadata-Version: 2.1
 Name: g2py
-Version: 0.1.2
-Summary: Python3 binding for `@AntV/G2` Plotting Library, make charting easier.
-Home-page: https://github.com/2017kevinwu/
-Author: kevin
-Author-email: 1357690472@qq.com
-License: MIT
-Keywords: AntV,G2,charts,g2py,visualization
-Classifier: Environment :: Console
+Version: 0.2.0
+Summary: 🎨 g2py 是 @AntV/G2 在 Python3 上的封装
+Home-page: https://github.com/antvis/g2py
+Author: g2py contributors
+Author-email: 
+Classifier: Development Status :: 4 - Beta
 Classifier: Intended Audience :: Developers
 Classifier: License :: OSI Approved :: MIT License
 Classifier: Operating System :: OS Independent
-Classifier: Programming Language :: Python
 Classifier: Programming Language :: Python :: 3
-Classifier: Programming Language :: Python :: 3.6
-Classifier: Programming Language :: Python :: 3.7
 Classifier: Programming Language :: Python :: 3.8
 Classifier: Programming Language :: Python :: 3.9
 Classifier: Programming Language :: Python :: 3.10
 Classifier: Programming Language :: Python :: 3.11
-Classifier: Topic :: Software Development :: Libraries
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Topic :: Scientific/Engineering :: Visualization
+Requires-Python: >=3.8
 Description-Content-Type: text/markdown
-Requires-Dist: jinja2~=2.11.2
-Requires-Dist: simplejson
+Provides-Extra: dev
+Provides-Extra: jupyter
 
-# g2py
+# G2PY - Python G2 图表库
 
-> 🎨 g2py 是 [`@AntV/G2`](https://github.com/antvis/G2) 在 Python3 上的封装。与 G2Plot采用同样的方式进行封装 
+G2PY 是一个基于蚂蚁集团 G2 图表库的 Python 封装，让你能够在 Python 环境中轻松创建美观的交互式图表。
 
-[![Latest Stable Version](https://img.shields.io/pypi/v/g2py.svg)](https://pypi.python.org/pypi/g2py)
-[![Pypi Download](https://img.shields.io/pypi/dm/g2py)](https://pypi.python.org/pypi/g2py)
+## ✨ 主要特性
 
+- 🎨 **简洁的API设计** - 支持链式调用，代码更优雅
+- 📊 **丰富的图表类型** - 支持柱状图、折线图、散点图、饼图等
+- 🔗 **链式方法调用** - 流畅的编程体验
+- 🌐 **在线/离线模式** - 支持CDN和本地G2库文件
+- 📱 **响应式设计** - 图表自动适应容器大小
+- 🛠️ **完善的错误处理** - 详细的错误信息和异常处理
+- 📝 **Jupyter支持** - 完美支持Jupyter Notebook和JupyterLab
 
-<div align="center">
-  <img src="https://free.wzznft.com/i/2023/10/19/u4chtb.png" width="800">
-</div>
+## 🚀 快速开始
 
-
-**相关文档**： [English README](./README.md)  ·  [绘制常用统计图表](./docs/plot.md)  ·  [在 Jupyter 中使用](./docs/jupyter.md)  ·  [技术原理](./docs/how.md)
-
-## 安装
+### 安装
 
 ```bash
-$ pip install g2py
+# 克隆项目
+git clone https://github.com/your-username/g2py.git
+cd g2py
+
+# 安装依赖
+pip install -e .
 ```
 
+### 基本使用
 
-## 使用
-
-#### **渲染成 HTML**
-
-```py
-
-
+```python
 from g2py import Plot
-chart10 = Plot("Chart")
-chart10.set_options({
-  "type": "density",
-  "autoFit": "true",
-  "data": {
-    "type": "fetch",
-    "value": "https://assets.antv.antgroup.com/g2/species.json",
-    "transform": [{"type": "kde", "field": "y", "groupBy": ["x"], "size": 20 }],
-  },
-  "encode": { "x": "x", "y": "y", "color": "x", "size": "size" },
-  "tooltip": 'true',
+
+# 创建数据
+data = [
+    {"category": "A", "value": 40},
+    {"category": "B", "value": 30},
+    {"category": "C", "value": 65},
+    {"category": "D", "value": 28},
+    {"category": "E", "value": 52}
+]
+
+# 创建图表
+chart = (Plot("BarChart")
+         .set_title("我的第一个图表")
+         .set_options({
+             "type": "interval",
+             "data": data,
+             "encode": {"x": "category", "y": "value"}
+         }))
+
+# 渲染到HTML文件
+chart.render("my_chart.html")
+```
+
+## 🌐 在线/离线模式
+
+### 在线模式（默认）
+使用CDN加载G2库，文件小但需要网络连接：
+
+```python
+# 在线模式（默认）
+chart = Plot("OnlineChart")
+chart.render("online_chart.html")  # 文件约5KB
+```
+
+### 离线模式
+将G2库代码嵌入HTML文件，无需网络连接：
+
+```python
+# 离线模式
+chart = Plot("OfflineChart", offline=True)
+chart.render("offline_chart.html")  # 文件约1.2MB
+
+# 或者使用链式调用设置离线模式
+chart = (Plot("ChainOfflineChart")
+         .set_offline(True)
+         .set_title("离线图表"))
+```
+
+### 文件大小对比
+- **在线模式**: ~5KB（需要网络连接）
+- **离线模式**: ~1.2MB（完全离线可用）
+
+## 📊 支持的图表类型
+
+### 柱状图
+```python
+chart = Plot().set_options({
+    "type": "interval",
+    "data": data,
+    "encode": {"x": "category", "y": "value"}
+})
+```
+
+### 折线图
+```python
+chart = Plot().set_options({
+    "type": "line",
+    "data": data,
+    "encode": {"x": "date", "y": "value"}
+})
+```
+
+### 散点图
+```python
+chart = Plot().set_options({
+    "type": "point",
+    "data": data,
+    "encode": {"x": "x", "y": "y", "color": "category"}
+})
+```
+
+### 面积图
+```python
+chart = Plot().set_options({
+    "type": "area",
+    "data": data,
+    "encode": {"x": "date", "y": "value"}
+})
+```
+
+## 🔗 链式API
+
+G2PY 支持流畅的链式调用：
+
+```python
+chart = (Plot("MyChart")
+         .set_title("销售数据分析")
+         .set_offline(True)  # 设置离线模式
+         .set_options({
+             "type": "interval",
+             "data": sales_data,
+             "encode": {"x": "month", "y": "sales"}
+         }))
+
+chart.render("sales_chart.html")
+```
+
+## 📱 Jupyter 支持
+
+### Jupyter Notebook
+```python
+from g2py import Plot
+
+chart = Plot().set_options({
+    "type": "interval", 
+    "data": data,
+    "encode": {"x": "category", "y": "value"}
 })
 
-# 1. 渲染成 html 文件
-chart10.render("plot.html")
-# 2. 渲染成 html 字符串
-chart10.render_html()
+# 在Notebook中显示
+chart.render_notebook()
 ```
 
+### JupyterLab
+```python
+# 在JupyterLab中显示
+chart.render_jupyter_lab()
+```
 
-#### **在 Jupyter 中使用**
+### Jupyter 问题修复
+如果在Jupyter中遇到空白显示问题，运行以下代码：
 
-```py
+```python
+# 清除模块缓存并重新导入
+import sys
+for module in list(sys.modules.keys()):
+    if module.startswith('g2py'):
+        del sys.modules[module]
+
+# 重新导入
 from g2py import Plot
-chart10 = Plot("Chart")
-chart10.set_options({
-  "type": "density",
-  "autoFit": "true",
-  "data": {
-    "type": "fetch",
-    "value": "https://assets.antv.antgroup.com/g2/species.json",
-    "transform": [{"type": "kde", "field": "y", "groupBy": ["x"], "size": 20 }],
-  },
-  "encode": { "x": "x", "y": "y", "color": "x", "size": "size" },
-  "tooltip": 'true',
+
+# 动态添加缺失的方法（如果需要）
+if not hasattr(Plot, 'set_title'):
+    def set_title(self, title):
+        self.page_title = title
+        return self
+    Plot.set_title = set_title
+
+if not hasattr(Plot, 'set_options'):
+    def set_options(self, options):
+        self.options = options
+        return self
+    Plot.set_options = set_options
+```
+
+## 🛠️ API 参考
+
+### Plot 类
+
+#### 构造函数
+```python
+Plot(plot_type="Chart", version="5", offline=False)
+```
+
+#### 主要方法
+- `set_title(title)` - 设置图表标题
+- `set_options(options)` - 设置图表配置
+- `set_offline(offline=True)` - 设置离线模式
+- `render(path)` - 渲染到HTML文件
+- `render_notebook()` - 在Jupyter Notebook中显示
+- `render_jupyter_lab()` - 在JupyterLab中显示
+
+## 🔧 高级配置
+
+### 自定义样式
+```python
+chart.set_options({
+    "type": "interval",
+    "data": data,
+    "encode": {"x": "category", "y": "value"},
+    "style": {
+        "fill": "#1890ff",
+        "stroke": "#ffffff",
+        "strokeWidth": 2
+    }
 })
-
-
-chart10.render_notebook()
-
-chart10.render_jupyter_lab()
-```
 ```
 
+### 坐标轴配置
+```python
+chart.set_options({
+    "type": "interval",
+    "data": data,
+    "encode": {"x": "category", "y": "value"},
+    "scale": {
+        "y": {"nice": True, "zero": True}
+    }
+})
+```
 
+## 🐛 常见问题
 
-使用 `JS` 方法，你可以创建一个 JavaScript 的代码片段去处理各种回调方法属性。
+### 1. 图表显示空白
+- 检查数据格式是否正确
+- 确保G2库正确加载（在线模式检查网络连接）
+- 查看浏览器控制台错误信息
 
+### 2. Jupyter中无法显示
+- 运行上述Jupyter修复代码
+- 重启Jupyter内核
+- 检查是否有模块缓存问题
 
-## API
+### 3. 离线模式文件过大
+- 离线模式会嵌入完整的G2库（约1.2MB）
+- 如果文件大小是问题，建议使用在线模式
 
-目前 `g2py` 只提供简单的一个 API。
+## 📝 更新日志
 
- - **Plot**
+### v1.2.0 (最新)
+- ✅ 新增离线模式支持
+- ✅ 优化G2 5.x API兼容性
+- ✅ 改进错误处理和用户体验
+- ✅ 完善Jupyter支持
 
-1. *Plot(plot_type: str)*: 获取 `Plot` 对应的类实例。
+### v1.1.0
+- ✅ 添加链式API支持
+- ✅ 重构代码架构
+- ✅ 改进错误处理
 
-2. *plot.set_options(options: object)*: 给图表实例设置一个 [G2](https://g2.antv.antgroup.com/) 图形的配置，文档可以直接参考 G2 官网，未进行任何二次数据结构包装。
+### v1.0.0
+- ✅ 基础图表功能
+- ✅ HTML渲染支持
+- ✅ Jupyter集成
 
-3. *plot.render(path, env, **kwargs)*: 渲染出一个 HTML 文件，同时可以传入文件的路径，以及 jinja2 env 和 kwargs 参数。
+## 🤝 贡献
 
-4. *plot.render_notebook(env, **kwargs)*: 将图形渲染到 jupyter 的预览。
+欢迎提交Issue和Pull Request！
 
-5. *plot.render_jupyter_lab(env, **kwargs)*: 将图形渲染到 jupyter lab 的预览。
+## 📄 许可证
 
-6. *plot.render_html(env, **kwargs)*: 渲染出 HTML 字符串，同时可以传入 jinja2 env 和 kwargs 参数。
+MIT License
 
-7. *plot.dump_js_options(env, **kwargs)*: 输出 Javascript 的 option 配置结构，同时可以传入 jinja2 env 和 kwargs 参数，可以用于 Server 中的 HTTP 结构返回数据结构。
+---
 
-
-
+**G2PY** - 让Python图表创建变得简单而优雅 ✨

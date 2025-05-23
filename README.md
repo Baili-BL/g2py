@@ -1,76 +1,198 @@
-# g2py
+# G2PY
 
-> 🎨 g2py 是 [`@AntV/G2`](https://github.com/antvis/G2) 在 Python3 上的封装。与 G2Plot采用同样的方式进行封装 
+[![Python Version](https://img.shields.io/badge/python-3.11%2B-blue.svg)](https://python.org)
+[![G2 Version](https://img.shields.io/badge/G2-5.1.4-green.svg)](https://g2.antv.vision)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-[![Latest Stable Version](https://img.shields.io/pypi/v/g2py.svg)](https://pypi.python.org/pypi/g2py)
-[![Pypi Download](https://img.shields.io/pypi/dm/g2py)](https://pypi.python.org/pypi/g2py)
+**G2PY** 是基于蚂蚁集团 [G2](https://g2.antv.vision) 可视化引擎的 Python 数据可视化库，提供简洁的 API 和丰富的图表类型，完美支持 Jupyter 环境。
 
+## 特性
 
-<div align="center">
-  <img src="https://free.wzznft.com/i/2023/10/19/u4chtb.png" width="800">
-</div>
-**相关文档**： [English README](./README.md)  ·  [绘制常用统计图表](./docs/plot.md)  ·  [在 Jupyter 中使用](./docs/jupyter.md)  ·  [技术原理](./docs/how.md)
+- 🚀 **现代化架构** - 支持 Python 3.11+，采用现代化设计模式
+- 📊 **丰富图表** - 支持折线图、柱状图、散点图、气泡图、面积图等
+- 🎨 **灵活配置** - 完整的样式自定义和交互配置支持
+- 📱 **响应式设计** - 自适应容器大小，支持多种尺寸设置
+- 🌐 **双模式运行** - 支持在线 CDN 和离线静态文件模式
+- 📝 **Jupyter 原生支持** - 无缝集成 Jupyter Notebook 和 JupyterLab
+- 🔗 **链式 API** - 支持方法链式调用，代码简洁优雅
 
 ## 安装
+
 ```bash
-$ pip install g2py
-```
-## 使用
-#### **渲染成 HTML**
-```py
+# 克隆项目
+git clone https://github.com/your-repo/g2py.git
+cd g2py
 
+# 安装依赖
+pip install jinja2>=3.1.0 simplejson>=3.17.0
+```
+
+## 快速开始
+
+```python
 from g2py import Plot
-chart10 = Plot("Chart")
-chart10.set_options({
-  "type": "density",
-  "autoFit": "true",
-  "data": {
-    "type": "fetch",
-    "value": "https://assets.antv.antgroup.com/g2/species.json",
-    "transform": [{"type": "kde", "field": "y", "groupBy": ["x"], "size": 20 }],
-  },
-  "encode": { "x": "x", "y": "y", "color": "x", "size": "size" },
-  "tooltip": 'true',
+
+# 准备数据
+data = [
+    {'month': '1月', 'sales': 1200},
+    {'month': '2月', 'sales': 1500}, 
+    {'month': '3月', 'sales': 1800}
+]
+
+# 创建图表
+plot = Plot("line")
+plot.set_options({
+    "type": "line",
+    "data": data,
+    "encode": {"x": "month", "y": "sales"}
 })
 
-# 1. 渲染成 html 文件
-chart10.render("plot.html")
-# 2. 渲染成 html 字符串
-chart10.render_html()
+# 渲染图表
+plot.show()  # Jupyter 环境
+# 或
+plot.render("chart.html")  # 保存为文件
 ```
-#### **在 Jupyter 中使用**
 
-```py
-from g2py import Plot
-chart10 = Plot("Chart")
-chart10.set_options({
-  "type": "density",
-  "autoFit": "true",
-  "data": {
-    "type": "fetch",
-    "value": "https://assets.antv.antgroup.com/g2/species.json",
-    "transform": [{"type": "kde", "field": "y", "groupBy": ["x"], "size": 20 }],
-  },
-  "encode": { "x": "x", "y": "y", "color": "x", "size": "size" },
-  "tooltip": 'true',
+## 核心 API
+
+### Plot 类
+
+```python
+Plot(plot_type="Chart", version="5", offline=False)
+```
+
+### 主要方法
+
+| 方法 | 说明 | 示例 |
+|------|------|------|
+| `set_options(options)` | 设置图表配置 | `plot.set_options({"type": "line", "data": data})` |
+| `set_title(title)` | 设置页面标题 | `plot.set_title("销售趋势图")` |
+| `show()` | 在 Jupyter 中显示 | `plot.show()` |
+| `render(path)` | 保存为 HTML 文件 | `plot.render("chart.html")` |
+
+### 配置选项
+
+```python
+plot.set_options({
+    "type": "line",                    # 图表类型
+    "data": data,                      # 数据源
+    "encode": {                        # 数据映射
+        "x": "field_name",
+        "y": "field_name", 
+        "color": "category_field"
+    },
+    "style": {                         # 样式配置
+        "stroke": "#1890ff",
+        "lineWidth": 2,
+        "opacity": 0.8
+    },
+    "width": 800,                      # 图表宽度
+    "height": 400,                     # 图表高度
+    "autoFit": True,                   # 自适应容器
+    "tooltip": True,                   # 显示提示框
+    "legend": True                     # 显示图例
 })
-chart10.render_notebook()
-![image](https://github.com/user-attachments/assets/8e80c885-8fc2-4d4a-85de-c3a557f6827c)
+```
+
+## 图表类型
+
+### 基础图表
+
+| 类型 | 说明 | 示例文件 |
+|------|------|----------|
+| `line` | 折线图 | `jupyter_demo_line.py` |
+| `interval` | 柱状图 | `jupyter_demo_interval.py` |
+| `point` | 散点图 | `jupyter_demo_point.py` |
+| `area` | 面积图 | - |
+
+### 使用示例
+
+```python
+# 折线图
+from jupyter_demo_line import demo_basic_line
+demo_basic_line()
+
+# 柱状图  
+from jupyter_demo_interval import demo_basic_bar
+demo_basic_bar()
+
+# 散点图
+from jupyter_demo_point import demo_basic_point
+demo_basic_point()
+```
+
+## 运行模式
+
+### 在线模式（默认）
+```python
+plot = Plot("line")  # 使用 CDN 加载 G2
+```
+
+### 离线模式
+```python
+plot = Plot("line", offline=True)  # 使用本地 G2 文件
+```
+
+## 高级功能
+
+### 链式调用
+```python
+chart = (Plot("line")
+         .set_options({"type": "line", "data": data, "encode": {"x": "x", "y": "y"}})
+         .set_title("趋势图"))
+```
+
+### 响应式图表
+```python
+plot.set_options({"autoFit": True})  # 自适应容器大小
+```
+
+### 多系列数据
+```python
+# 支持分组、堆叠等多种数据展示方式
+plot.set_options({
+    "transform": [{"type": "dodgeX"}],  # 分组
+    "encode": {"color": "category"}     # 按类别着色
+})
+```
+
+## 系统要求
+
+- **Python**: 3.11+
+- **依赖项**: 
+  - `jinja2>=3.1.0`
+  - `simplejson>=3.17.0`
+- **可选**: Jupyter Notebook/Lab 支持
+
+## 项目结构
 
 ```
+g2py/
+├── g2py/
+│   ├── __init__.py
+│   ├── plot.py                 # 核心 Plot 类
+│   ├── engine.py              # 模板引擎
+│   ├── templates/             # HTML 模板
+│   └── static/                # 静态资源
+├── jupyter_demo_line.py       # 折线图演示
+├── jupyter_demo_interval.py   # 柱状图演示
+├── jupyter_demo_point.py      # 散点图演示
+├── JUPYTER_GUIDE.md          # Jupyter 使用指南
+└── README.md
 ```
-使用 `JS` 方法，你可以创建一个 JavaScript 的代码片段去处理各种回调方法属性。
 
-## API
-目前 `g2py` 只提供简单的一个 API。
- - **Plot**
-1. *Plot(plot_type: str)*: 获取 `Plot` 对应的类实例。
-2. *plot.set_options(options: object)*: 给图表实例设置一个 [G2](https://g2.antv.antgroup.com/) 图形的配置，文档可以直接参考 G2 官网，未进行任何二次数据结构包装。
-3. *plot.render(path, env, **kwargs)*: 渲染出一个 HTML 文件，同时可以传入文件的路径，以及 jinja2 env 和 kwargs 参数。
-4. *plot.render_notebook(env, **kwargs)*: 将图形渲染到 jupyter 的预览。
-5. *plot.render_jupyter_lab(env, **kwargs)*: 将图形渲染到 jupyter lab 的预览。
-6. *plot.render_html(env, **kwargs)*: 渲染出 HTML 字符串，同时可以传入 jinja2 env 和 kwargs 参数。
-7. *plot.dump_js_options(env, **kwargs)*: 输出 Javascript 的 option 配置结构，同时可以传入 jinja2 env 和 kwargs 参数，可以用于 Server 中的 HTTP 结构返回数据结构。
+## 文档
 
+- [Jupyter 使用指南](JUPYTER_GUIDE.md) - 详细的 Jupyter 环境使用说明
+- [API 参考](g2py/plot.py) - 完整的 API 文档
+- [示例集合](examples_updated.py) - 综合示例代码
 
+## 许可证
 
+MIT License - 详见 [LICENSE](LICENSE) 文件
+
+## 相关链接
+
+- [G2 官方文档](https://g2.antv.vision)
+- [问题反馈](https://github.com/your-repo/g2py/issues)
+- [贡献指南](CONTRIBUTING.md)
