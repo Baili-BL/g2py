@@ -96,29 +96,73 @@ plot.set_options({
 
 ## 图表类型
 
+**G2PY 完全支持 G2 官方的所有图表类型**，包括但不限于：
+
 ### 基础图表
 
 | 类型 | 说明 | 示例文件 |
 |------|------|----------|
-| `line` | 折线图 | `jupyter_demo_line.py` |
-| `interval` | 柱状图 | `jupyter_demo_interval.py` |
-| `point` | 散点图 | `jupyter_demo_point.py` |
-| `area` | 面积图 | - |
+| `line` | 折线图、曲线图、阶梯线图 | `jupyter_demo_line.py` |
+| `interval` | 柱状图、条形图、直方图 | `jupyter_demo_interval.py` |
+| `point` | 散点图、气泡图 | `jupyter_demo_point.py` |
+| `area` | 面积图、堆叠面积图 | - |
+| `polygon` | 多边形、热力图 | - |
+| `path` | 路径图、轨迹图 | - |
+
+### 专业图表
+
+| 类型 | 说明 |
+|------|------|
+| `schema` | 箱线图、K线图、烛形图 |
+| `heatmap` | 热力图、密度图 |
+| `contour` | 等高线图 |
+| `pie` | 饼图、环图、玫瑰图 |
+| `radar` | 雷达图、极坐标图 |
+| `funnel` | 漏斗图、金字塔图 |
+| `gauge` | 仪表盘、进度条 |
+| `sankey` | 桑基图 |
+| `treemap` | 矩形树图 |
+| `sunburst` | 旭日图 |
+| `liquidFill` | 水波图 |
+| `wordCloud` | 词云图 |
+
+### 3D 图表
+
+| 类型 | 说明 |
+|------|------|
+| `bar3D` | 3D 柱状图 |
+| `scatter3D` | 3D 散点图 |
+| `line3D` | 3D 折线图 |
+| `surface` | 3D 曲面图 |
 
 ### 使用示例
 
 ```python
-# 折线图
+# 基础图表
 from jupyter_demo_line import demo_basic_line
-demo_basic_line()
+demo_basic_line()  # 折线图
 
-# 柱状图  
-from jupyter_demo_interval import demo_basic_bar
-demo_basic_bar()
+from jupyter_demo_interval import demo_basic_bar  
+demo_basic_bar()  # 柱状图
 
-# 散点图
 from jupyter_demo_point import demo_basic_point
-demo_basic_point()
+demo_basic_point()  # 散点图
+
+# 其他图表类型
+plot = Plot("area")
+plot.set_options({
+    "type": "area",
+    "data": data,
+    "encode": {"x": "month", "y": "sales"}
+})
+
+plot = Plot("pie") 
+plot.set_options({
+    "type": "interval",
+    "data": data,
+    "encode": {"y": "value", "color": "category"},
+    "coordinate": {"type": "theta", "outerRadius": 0.8}
+})
 ```
 
 ## 运行模式
